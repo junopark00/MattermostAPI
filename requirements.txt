@@ -1,0 +1,2 @@
+# Mattermost API 클라이언트 의존성
+requests>=2.28.0
