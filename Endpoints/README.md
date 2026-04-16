@@ -210,7 +210,8 @@ Message CRUD, threading, pinning, and search.
 | `get_thread(post_id)` | Get a post's thread (including replies) | `PostList` |
 | `search(team_id, terms, **kwargs)` | Search posts in a team | `PostList` |
 | `create(channel_id, message, root_id, file_ids, props)` | Create a post | `Post` |
-| `update(post_id, message, **kwargs)` | Update a post | `Post` |
+| `update(post_id, message, **kwargs)` | Update (replace) a post | `Post` |
+| `patch(post_id, message, props, file_ids, has_reactions)` | Partially update a post (only provided fields) | `Post` |
 | `delete(post_id)` | Delete a post | `bool` |
 | `pin(post_id)` | Pin a post to the channel | `bool` |
 | `unpin(post_id)` | Unpin a post | `bool` |
@@ -268,8 +269,12 @@ results = client.posts.search(team.id, "deployment")
 client.posts.pin(post.id)
 client.posts.unpin(post.id)
 
-# Edit a post
+# Edit a post (full replace)
 client.posts.update(post.id, "Updated message")
+
+# Patch a post (partial update — only provided fields are modified)
+client.posts.patch(post.id, message="Partially updated text")
+client.posts.patch(post.id, props={"attachments": [{"text": "new"}]})
 
 # Delete a post
 client.posts.delete(post.id)

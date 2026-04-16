@@ -13,6 +13,8 @@ A Python wrapper for the [Mattermost REST API v4](https://api.mattermost.com/), 
 - **Flexible Configuration** — Direct values, environment variables, or `.env` file
 - **Auto Pagination** — Built-in `get_all()` helpers that iterate through all pages
 - **Rate Limit Handling** — Automatic retry with configurable delay
+- **WebSocket Client** — Async WebSocket client for typing indicators and real-time actions
+- **Post Patch (Partial Update)** — Incremental message updates for streaming-style output
 - **Context Manager** — `with` statement support for automatic resource cleanup
 - **Detailed Exceptions** — Granular exception classes mapped to HTTP status codes
 
@@ -20,11 +22,12 @@ A Python wrapper for the [Mattermost REST API v4](https://api.mattermost.com/), 
 
 - Python 3.10+
 - `requests >= 2.28.0`
+- `websockets >= 13.0`
 
 ## Installation
 
 ```bash
-pip install requests
+pip install requests websockets
 ```
 
 Clone or copy the `MattermostAPI/` package into your project.
@@ -136,6 +139,39 @@ All endpoints are accessed via `MattermostClient` properties. For detailed metho
 
 ---
 
+## WebSocket Client
+
+The `MattermostWebSocketClient` provides an async WebSocket connection for real-time actions such as typing indicators.
+
+```python
+import asyncio
+from MattermostAPI import MattermostConfig
+from MattermostAPI.websocket_client import MattermostWebSocketClient
+
+config = MattermostConfig(
+    url="https://mattermost.example.com",
+    token="your-personal-access-token",
+)
+
+async def main():
+    # Context manager usage (recommended)
+    async with MattermostWebSocketClient(config) as ws:
+        await ws.typing(channel_id="channel_id")
+        await ws.typing(channel_id="channel_id", parent_id="thread_root_id")
+
+asyncio.run(main())
+```
+
+| Method | Description |
+| --- | --- |
+| `connect()` | Open WebSocket connection and authenticate |
+| `close()` | Close the WebSocket connection |
+| `typing(channel_id, parent_id)` | Send a typing indicator to a channel |
+
+> The `websocket_url` is automatically derived from `MattermostConfig` (e.g. `wss://mattermost.example.com/api/v4/websocket`).
+
+---
+
 ## Error Handling
 
 | Exception | Status | Description |
@@ -196,6 +232,7 @@ MattermostAPI/
 ├── constants.py         # API constants and endpoint paths
 ├── exceptions.py        # Custom exception classes
 ├── http_client.py       # HTTP session and request handling
+├── websocket_client.py  # Async WebSocket client (typing indicators)
 ├── requirements.txt     # Dependencies
 ├── Endpoints/
 │   ├── README.md        # Endpoint API reference

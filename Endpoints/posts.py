@@ -193,6 +193,54 @@ class PostsEndpoint(BaseEndpoint):
         )
         return Post.from_dict(data)
 
+    def patch(
+        self,
+        post_id: str,
+        message: Optional[str] = None,
+        props: Optional[dict[str, Any]] = None,
+        file_ids: Optional[list[str]] = None,
+        has_reactions: Optional[bool] = None,
+    ) -> Post:
+        """
+        Partially update (patch) a post.
+
+        Unlike update(), only the provided fields are modified.
+        Useful for streaming-style updates where only the message
+        body changes incrementally.
+
+        Examples:
+            patched = client.posts.patch("post_id", message="Updated text")
+            patched = client.posts.patch(
+                "post_id",
+                props={"attachments": [{"text": "new"}]},
+            )
+
+        Args:
+            post_id: Target post ID.
+            message: New message body (optional).
+            props: New properties dict (optional).
+            file_ids: New file IDs list (optional).
+            has_reactions: Whether the post has reactions (optional).
+
+        Returns:
+            Patched Post instance.
+        """
+        body: dict[str, Any] = {}
+        if message is not None:
+            body["message"] = message
+        if props is not None:
+            body["props"] = props
+        if file_ids is not None:
+            body["file_ids"] = file_ids
+        if has_reactions is not None:
+            body["has_reactions"] = has_reactions
+
+        data = self._http.put(
+            constants.ENDPOINT_POST_PATCH.format(post_id=post_id),
+            data=body,
+        )
+        return Post.from_dict(data)
+
     def delete(self, post_id: str) -> bool:
         """Delete a post. Returns True on success."""
         self._http.delete(

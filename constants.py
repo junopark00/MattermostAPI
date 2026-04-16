@@ -130,6 +130,7 @@ ENDPOINT_CHANNEL_STATS: str = "/channels/{channel_id}/stats"
 # Posts
 ENDPOINT_POSTS: str = "/posts"
 ENDPOINT_POST_BY_ID: str = "/posts/{post_id}"
+ENDPOINT_POST_PATCH: str = "/posts/{post_id}/patch"
 ENDPOINT_CHANNEL_POSTS: str = "/channels/{channel_id}/posts"
 ENDPOINT_POST_THREAD: str = "/posts/{post_id}/thread"
 ENDPOINT_POST_PIN: str = "/posts/{post_id}/pin"

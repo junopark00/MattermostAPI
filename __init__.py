@@ -46,6 +46,7 @@ from .exceptions import (
     MattermostRateLimitError,
     MattermostTimeoutError,
 )
+from .websocket_client import MattermostWebSocketClient
 
 __version__ = "1.0.0"
 
@@ -76,4 +77,6 @@ __all__ = [
     "MattermostNotFoundError",
     "MattermostRateLimitError",
     "MattermostTimeoutError",
+    # WebSocket
+    "MattermostWebSocketClient",
 ]
